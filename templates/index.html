@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal Flask + JS Example</title>
+</head>
+<body>
+    <h1>Minimal JavaScript to Python Example</h1>
+    <button id="sendButton">Send Random Number to Python</button>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('sendButton').addEventListener('click', async function() {
+            // Generate a random number
+            const randomNumber = Math.floor(Math.random() * 1000) + 1;
+            
+            // Display the generated number
+            document.getElementById('result').textContent = `Generated: ${randomNumber}`;
+            
+            // Send to Python server
+            try {
+                const response = await fetch('/api/number', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ number: randomNumber })
+                });
+                
+                const data = await response.json();
+                document.getElementById('result').textContent += 
+                    `\nServer response: Received ${data.received}`;
+                
+                // Check server console to see the printed number
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html> 
