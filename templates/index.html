@@ -1,40 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Minimal Flask + JS Example</title>
+  <meta charset="UTF-8" />
+  <title>My p5.js Sketch</title>
+  <p>Hello World</p>
 </head>
-<body>
-    <h1>Minimal JavaScript to Python Example</h1>
-    <button id="sendButton">Send Random Number to Python</button>
-    <div id="result"></div>
+<body style="text-align:center; font-family:sans-serif;">
+  <div id="sketch-holder"></div>
+  <div id="video-holder"></div>
 
-    <script>
-        document.getElementById('sendButton').addEventListener('click', async function() {
-            // Generate a random number
-            const randomNumber = Math.floor(Math.random() * 1000) + 1;
-            
-            // Display the generated number
-            document.getElementById('result').textContent = `Generated: ${randomNumber}`;
-            
-            // Send to Python server
-            try {
-                const response = await fetch('/api/number', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ number: randomNumber })
-                });
-                
-                const data = await response.json();
-                document.getElementById('result').textContent += 
-                    `\nServer response: Received ${data.received}`;
-                
-                // Check server console to see the printed number
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        });
-    </script>
+  <!-- p5.js and ml5.js libraries -->
+  <script src="/lib/p5.js"></script>
+  <script src="/lib/ml5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
+  <!-- Your sketch -->
+  <script src="/sketch.js"></script>
 </body>
-</html> 
+</html>
