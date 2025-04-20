@@ -82,24 +82,17 @@ function draw() {
       elbowText.html(`LEFT ELBOW: x=${nf(e.x, 1, 3)} y=${nf(e.y, 1, 3)} z=${nf(e.z, 1, 3)}`);
       wristText.html(`LEFT WRIST: x=${nf(w.x, 1, 3)} y=${nf(w.y, 1, 3)} z=${nf(w.z, 1, 3)}`);
 
-      drawArmSegment(kp[12], kp[14]); // RIGHT SHOULDER to ELBOW
-      drawArmSegment(kp[14], kp[16]); // RIGHT ELBOW to WRIST
+      // Draw limbs with custom colors
+      drawArmSegment(s, e, [0, 255, 200]); // Shoulder to Elbow: Cyan-ish
+      drawArmSegment(e, w, [0, 200, 255]); // Elbow to Wrist: Blue-ish
 
-      [12, 14, 16].forEach((i) => {
-        if (kp[i].confidence > 0.1) {
-          push();
-          stroke(255, 0, 255);
-          strokeWeight(1);
-          fill(255, 150);
-          translate(kp[i].x, kp[i].y, kp[i].z);
-          rotateZ(angle);
-          box(0.05);
-          pop();
-        }
-      });
+      // Draw joints with different colors
+      drawJoint(s, [255, 50, 50], 0.07);   // Shoulder: Red
+      drawJoint(e, [50, 255, 50], 0.06);   // Elbow: Green
+      drawJoint(w, [50, 50, 255], 0.05);   // Wrist: Blue
 
       // ✅ Send data if rollDeg is available
-      if (rollDeg !== null && socket.readyState === WebSocket.OPEN) {
+      if (rollDeg !== null && socket && socket.readyState === WebSocket.OPEN) {
         const dataToSend = {
           shoulder: { x: s.x, y: s.y, z: s.z },
           elbow: { x: e.x, y: e.y, z: e.z },
@@ -138,9 +131,23 @@ async function detectHand() {
   }
 }
 
-function drawArmSegment(a, b) {
+function drawJoint(point, color, size) {
+  if (point.confidence > 0.1) {
+    push();
+    stroke(color);
+    strokeWeight(1);
+    fill(color[0], color[1], color[2], 150);
+    translate(point.x, point.y, point.z);
+    rotateZ(angle);
+    box(size);
+    pop();
+  }
+}
+
+// Updated function to draw arm segments with custom colors
+function drawArmSegment(a, b, color = [0, 255, 255]) {
   if (a.confidence > 0.1 && b.confidence > 0.1) {
-    stroke(0, 255, 255);
+    stroke(color);
     strokeWeight(4);
     beginShape();
     vertex(a.x, a.y, a.z);
